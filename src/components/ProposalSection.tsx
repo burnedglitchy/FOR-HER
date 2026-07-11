@@ -14,6 +14,8 @@ const proposalLines = [
   "Tanu — will you be mine?  ",
 ];
 
+const noTexts = ["No", "Nice try", "Nope", "Not happening", "Try again 😏"];
+
 type ProposalSectionProps = {
   onAccepted: () => void;
 };
@@ -22,6 +24,14 @@ export default function ProposalSection({ onAccepted }: ProposalSectionProps) {
   const sectionRef = useRef<HTMLElement | null>(null);
   const lineRefs = useRef<HTMLParagraphElement[]>([]);
   const [buttonsVisible, setButtonsVisible] = useState(false);
+
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
+  const placeholderRef = useRef<HTMLDivElement | null>(null);
+
+  const [pos, setPos] = useState<{ x: number; y: number } | null>(null);
+  const [hasDodged, setHasDodged] = useState(false);
+  const [dodgeCount, setDodgeCount] = useState(0);
+  const [isActive, setIsActive] = useState(false);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -49,8 +59,138 @@ export default function ProposalSection({ onAccepted }: ProposalSectionProps) {
       });
     }, section);
 
-    return () => context.revert();
+    // Setup intersection observer to only activate dodge when in view
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsActive(entry.isIntersecting);
+      },
+      { threshold: 0.05 }
+    );
+    observer.observe(section);
+
+    return () => {
+      context.revert();
+      observer.disconnect();
+    };
   }, []);
+
+  // Update button coordinates to match placeholder before first dodge
+  useEffect(() => {
+    const updatePosition = () => {
+      if (!hasDodged && placeholderRef.current && buttonsVisible) {
+        const rect = placeholderRef.current.getBoundingClientRect();
+        setPos({ x: rect.left, y: rect.top });
+      }
+    };
+
+    updatePosition();
+    window.addEventListener("resize", updatePosition);
+    window.addEventListener("scroll", updatePosition);
+
+    if (buttonsVisible) {
+      const t = setTimeout(updatePosition, 100);
+      return () => {
+        window.removeEventListener("resize", updatePosition);
+        window.removeEventListener("scroll", updatePosition);
+        clearTimeout(t);
+      };
+    }
+
+    return () => {
+      window.removeEventListener("resize", updatePosition);
+      window.removeEventListener("scroll", updatePosition);
+    };
+  }, [buttonsVisible, hasDodged]);
+
+  const dodge = () => {
+    const btnWidth = 140;
+    const btnHeight = 56;
+    const margin = 40;
+    const minX = margin;
+    const maxX = window.innerWidth - btnWidth - margin;
+    const minY = margin;
+    const maxY = window.innerHeight - btnHeight - margin;
+
+    const avoidRects: DOMRect[] = [];
+    const yesContainer = document.getElementById("yes-maybe-container");
+    if (yesContainer) {
+      avoidRects.push(yesContainer.getBoundingClientRect());
+    }
+
+    let newX = pos ? pos.x : 0;
+    let newY = pos ? pos.y : 0;
+
+    for (let attempt = 0; attempt < 25; attempt += 1) {
+      newX = minX + Math.random() * (maxX - minX);
+      newY = minY + Math.random() * (maxY - minY);
+
+      const btnRect = {
+        left: newX,
+        top: newY,
+        right: newX + btnWidth,
+        bottom: newY + btnHeight,
+      };
+
+      const overlaps = avoidRects.some((rect) => {
+        return !(
+          btnRect.right < rect.left ||
+          btnRect.left > rect.right ||
+          btnRect.bottom < rect.top ||
+          btnRect.top > rect.bottom
+        );
+      });
+
+      if (!overlaps) break;
+    }
+
+    setPos({ x: newX, y: newY });
+    setHasDodged(true);
+    setDodgeCount((prev) => prev + 1);
+  };
+
+  // Listen to proximity
+  useEffect(() => {
+    if (!isActive || !pos || !buttonsVisible) return;
+
+    const handleMouseMove = (event: MouseEvent) => {
+      const button = buttonRef.current;
+      if (!button) return;
+
+      const rect = button.getBoundingClientRect();
+      const btnCenterX = rect.left + rect.width / 2;
+      const btnCenterY = rect.top + rect.height / 2;
+      const dist = Math.hypot(event.clientX - btnCenterX, event.clientY - btnCenterY);
+
+      if (dist < 80) {
+        dodge();
+      }
+    };
+
+    const handleTouchStart = (event: TouchEvent) => {
+      const touch = event.touches[0];
+      if (!touch) return;
+
+      const button = buttonRef.current;
+      if (!button) return;
+
+      const rect = button.getBoundingClientRect();
+      const btnCenterX = rect.left + rect.width / 2;
+      const btnCenterY = rect.top + rect.height / 2;
+      const dist = Math.hypot(touch.clientX - btnCenterX, touch.clientY - btnCenterY);
+
+      if (dist < 90) {
+        dodge();
+      }
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("touchstart", handleTouchStart, { passive: true });
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("touchstart", handleTouchStart);
+    };
+  }, [isActive, pos, buttonsVisible]);
 
   const accept = () => {
     void confetti({
@@ -93,10 +233,11 @@ export default function ProposalSection({ onAccepted }: ProposalSectionProps) {
         <AnimatePresence>
           {buttonsVisible && (
             <motion.div
+              id="yes-maybe-container"
               initial={{ opacity: 0, y: 22 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 12 }}
-              className="mt-12 flex flex-col justify-center gap-4 sm:flex-row"
+              className="mt-12 flex flex-col justify-center items-center gap-4 sm:flex-row"
             >
               <button
                 type="button"
@@ -113,9 +254,42 @@ export default function ProposalSection({ onAccepted }: ProposalSectionProps) {
               >
                 Maybe yes
               </button>
+
+              {/* Placeholder for runaway button layout spacing */}
+              <div
+                ref={placeholderRef}
+                className="w-[140px] h-[56px] shrink-0 pointer-events-none"
+              />
             </motion.div>
           )}
         </AnimatePresence>
+
+        {buttonsVisible && pos && (
+          <motion.button
+            ref={buttonRef}
+            type="button"
+            onPointerDown={(e) => {
+              e.preventDefault();
+              dodge();
+            }}
+            onClick={(e) => {
+              e.preventDefault();
+              dodge();
+            }}
+            style={{
+              position: "fixed",
+              left: 0,
+              top: 0,
+              width: 140,
+              height: 56,
+            }}
+            animate={{ x: pos.x, y: pos.y }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            className="z-50 inline-flex items-center justify-center gap-2 rounded-full border border-white/10 bg-white/5 px-6 py-3.5 font-bold text-paper/70 backdrop-blur-xl transition hover:border-red-500/40 hover:text-white pointer-events-auto select-none"
+          >
+            {noTexts[dodgeCount % noTexts.length]}
+          </motion.button>
+        )}
       </div>
     </section>
   );

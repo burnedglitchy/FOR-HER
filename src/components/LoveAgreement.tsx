@@ -1,5 +1,5 @@
-import { motion } from "framer-motion";
 import { Camera, Heart } from "lucide-react";
+import { motion } from "framer-motion";
 
 const vows = [
   "To be your honest, faithful, and loving partner for the rest of my days.",
@@ -13,6 +13,20 @@ const vows = [
 ];
 
 const sideHearts = Array.from({ length: 8 }, (_, index) => index);
+
+const CornerFlourish = ({ className }: { className: string }) => (
+  <svg
+    viewBox="0 0 32 32"
+    className={`absolute w-8 h-8 text-[#d35b8c]/50 pointer-events-none select-none z-20 ${className}`}
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.2"
+  >
+    <path d="M 4,16 L 4,4 L 16,4" />
+    <path d="M 8,12 L 8,8 L 12,8" />
+    <path d="M 4,4 C 12,12 20,4 28,4" />
+  </svg>
+);
 
 export default function LoveAgreement() {
   const date = new Date().toLocaleDateString("en-IN");
@@ -29,6 +43,16 @@ export default function LoveAgreement() {
         className="relative z-10 w-full max-w-3xl bg-paper p-3 text-paper-ink shadow-[0_30px_90px_rgba(0,0,0,0.5)] sm:p-5"
       >
         <div className="relative border-[3px] border-[#d35b8c] bg-[#fffdfb] p-4 sm:p-7">
+          <div className="paper-texture" />
+          <CornerFlourish className="top-2 left-2" />
+          <CornerFlourish className="top-2 right-2 rotate-90" />
+          <CornerFlourish className="bottom-2 left-2 -rotate-90" />
+          <CornerFlourish className="bottom-2 right-2 rotate-180" />
+
+          <div className="absolute top-4 right-6 text-[10px] font-mono font-bold uppercase tracking-wider text-paper-ink/50 select-none z-20">
+            No. LA-2026-001
+          </div>
+
           <div className="pointer-events-none absolute inset-2 border border-[#d35b8c]/55" />
           <div className="pointer-events-none absolute inset-x-5 top-5 h-[calc(100%-2.5rem)] border-x border-[#d35b8c]/30" />
 

@@ -9,6 +9,7 @@ export default function DistanceMap() {
   const sectionRef = useRef<HTMLElement | null>(null);
   const routeRef = useRef<SVGPathElement | null>(null);
   const [distance, setDistance] = useState(0);
+  const [planePos, setPlanePos] = useState({ x: 290, y: 188, angle: 0 });
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -38,6 +39,23 @@ export default function DistanceMap() {
               setDistance(Math.round(this.targets()[0].val));
             },
           });
+
+          // Animate plane along path on loop
+          const planeVal = { progress: 0 };
+          gsap.to(planeVal, {
+            progress: 1,
+            duration: 15,
+            repeat: -1,
+            ease: "none",
+            onUpdate() {
+              const totalLength = route.getTotalLength();
+              const currentLength = planeVal.progress * totalLength;
+              const point = route.getPointAtLength(currentLength);
+              const nextPoint = route.getPointAtLength(Math.min(currentLength + 2, totalLength));
+              const angle = Math.atan2(nextPoint.y - point.y, nextPoint.x - point.x) * (180 / Math.PI);
+              setPlanePos({ x: point.x, y: point.y, angle: angle });
+            },
+          });
         },
       });
     }, section);
@@ -59,6 +77,22 @@ export default function DistanceMap() {
             {distance.toLocaleString("en-IN")}
           </h2>
           <p className="mt-3 text-sm font-bold uppercase tracking-[0.32em] text-paper/55">kilometres</p>
+          
+          <div className="mt-7 grid grid-cols-3 gap-2.5 max-w-[420px]">
+            <div className="glass-panel rounded-xl p-3 text-center border border-white/5 bg-white/2">
+              <p className="text-[10px] uppercase tracking-wider text-muted font-semibold">by road</p>
+              <p className="text-sm font-bold text-accent mt-0.5">14 hrs</p>
+            </div>
+            <div className="glass-panel rounded-xl p-3 text-center border border-white/5 bg-white/2">
+              <p className="text-[10px] uppercase tracking-wider text-muted font-semibold">by flight</p>
+              <p className="text-sm font-bold text-accent mt-0.5">1.5 hrs</p>
+            </div>
+            <div className="glass-panel rounded-xl p-3 text-center border border-accent/20 bg-accent/5 shadow-[0_0_12px_rgba(201,149,108,0.12)]">
+              <p className="text-[10px] uppercase tracking-wider text-accent-light font-semibold">by call</p>
+              <p className="text-sm font-bold text-white mt-0.5 animate-pulse">0 seconds</p>
+            </div>
+          </div>
+
           <p className="mt-9 max-w-md font-display text-4xl font-semibold leading-tight text-paper sm:text-5xl">
             kilometers apart. Never felt closer.
           </p>
@@ -77,6 +111,21 @@ export default function DistanceMap() {
               stroke="rgba(255,248,243,0.28)"
               strokeWidth="3"
             />
+            {/* The long way (road route) */}
+            <path
+              id="roadRoute"
+              d="M290 188 C220 240 230 320 260 380 C280 420 300 440 322 454"
+              fill="none"
+              stroke="rgba(201, 149, 108, 0.28)"
+              strokeWidth="2"
+              strokeDasharray="4 6"
+            />
+            <text dy="-5" fontSize="10" fontFamily="Inter" fontWeight="500" fill="rgba(201, 149, 108, 0.65)" letterSpacing="0.05em">
+              <textPath href="#roadRoute" startOffset="50%" textAnchor="middle">
+                the way we've never driven
+              </textPath>
+            </text>
+
             <path
               d="M290 188 C282 240 292 285 315 330 C337 371 335 410 322 454"
               fill="none"
@@ -92,6 +141,16 @@ export default function DistanceMap() {
               strokeWidth="5"
               strokeLinecap="round"
             />
+            
+            {/* Animated plane */}
+            <g transform={`translate(${planePos.x} ${planePos.y}) rotate(${planePos.angle})`}>
+              <path
+                d="M-7 0 L-2 -3 L-1 -7 L1 -7 L0 -3 L5 0 L0 3 L1 7 L-1 7 L-2 3 Z"
+                fill="#e63946"
+                className="drop-shadow-[0_2px_4px_rgba(0,0,0,0.55)]"
+              />
+            </g>
+
             <g transform="translate(290 188)">
               <circle className="pulse-ring" r="18" fill="none" stroke="#e63946" strokeWidth="3" style={{ transformBox: "fill-box", transformOrigin: "center" }} />
               <circle r="7" fill="#e63946" />

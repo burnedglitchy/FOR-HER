@@ -3,12 +3,13 @@ import { motion } from "framer-motion";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Heart } from "lucide-react";
-import placeholderPhoto from "../assets/photos/placeholder.jpg";
+import placeholderPhoto from "../assets/photos/Fo8LNKmaYAE2nWh.jpg";
+import chatpati from "../assets/photos/IMG_20260709_200208_893.jpg";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const polaroids = [
-  { src: placeholderPhoto, caption: "The Beginning", rotation: -4 },
+  { src: placeholderPhoto, caption: "OUR DUO", rotation: -4 },
   { src: placeholderPhoto, caption: "First Date", rotation: 3 },
   { src: placeholderPhoto, caption: "Laughs", rotation: -2 },
   { src: placeholderPhoto, caption: "Together", rotation: 4 },
@@ -35,6 +36,8 @@ export default function PolaroidGallery() {
   const sectionRef = useRef<HTMLElement | null>(null);
   const trackRef = useRef<HTMLDivElement | null>(null);
   const cardsRef = useRef<HTMLDivElement[]>([]);
+  const desktopThreadRef = useRef<SVGPathElement | null>(null);
+  const mobileThreadRef = useRef<SVGPathElement | null>(null);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -58,6 +61,9 @@ export default function PolaroidGallery() {
         });
       });
 
+      const dThread = desktopThreadRef.current;
+      const mThread = mobileThreadRef.current;
+
       if (window.matchMedia("(min-width: 768px)").matches) {
         gsap.to(track, {
           x: () => {
@@ -74,6 +80,36 @@ export default function PolaroidGallery() {
             invalidateOnRefresh: true,
           },
         });
+
+        if (dThread) {
+          const length = dThread.getTotalLength();
+          gsap.set(dThread, { strokeDasharray: length, strokeDashoffset: length });
+          gsap.to(dThread, {
+            strokeDashoffset: 0,
+            ease: "none",
+            scrollTrigger: {
+              trigger: section,
+              start: "top top",
+              end: () => `+=${Math.max(track.scrollWidth, window.innerWidth)}`,
+              scrub: 1,
+            },
+          });
+        }
+      } else {
+        if (mThread) {
+          const length = mThread.getTotalLength();
+          gsap.set(mThread, { strokeDasharray: length, strokeDashoffset: length });
+          gsap.to(mThread, {
+            strokeDashoffset: 0,
+            ease: "none",
+            scrollTrigger: {
+              trigger: section,
+              start: "top 60%",
+              end: "bottom 90%",
+              scrub: 0.5,
+            },
+          });
+        }
       }
     }, section);
 
@@ -82,6 +118,7 @@ export default function PolaroidGallery() {
 
   return (
     <section ref={sectionRef} className="section-shell min-h-screen px-6 py-20 sm:px-10 lg:px-20">
+      <div className="noise-overlay" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_45%,rgba(255,255,255,0.06),transparent_34rem)]" />
       {hearts.map((position, index) => (
         <Heart
@@ -106,6 +143,39 @@ export default function PolaroidGallery() {
         ref={trackRef}
         className="relative z-10 flex w-full flex-col items-center gap-8 pb-12 md:w-max md:flex-row md:items-start md:gap-10 lg:gap-12"
       >
+        {/* Desktop thread */}
+        <svg
+          viewBox="0 0 1800 80"
+          preserveAspectRatio="none"
+          className="absolute top-[20px] inset-x-0 h-[80px] pointer-events-none z-0 hidden md:block"
+          style={{ width: "100%" }}
+        >
+          <path
+            ref={desktopThreadRef}
+            d="M 0,30 Q 150,65 300,30 Q 450,65 600,30 Q 750,65 900,30 Q 1050,65 1200,30 Q 1350,65 1500,30 Q 1650,65 1800,30"
+            fill="none"
+            stroke="rgba(201, 149, 108, 0.55)"
+            strokeWidth="1.8"
+            vectorEffect="non-scaling-stroke"
+          />
+        </svg>
+
+        {/* Mobile thread */}
+        <svg
+          viewBox="0 0 50 2000"
+          preserveAspectRatio="none"
+          className="absolute left-[15%] top-10 w-[40px] h-[calc(100%-80px)] pointer-events-none z-0 md:hidden"
+        >
+          <path
+            ref={mobileThreadRef}
+            d="M 25,0 C 45,250 5,500 25,750 C 45,1000 5,1250 25,1500 C 45,1750 25,2000"
+            fill="none"
+            stroke="rgba(201, 149, 108, 0.55)"
+            strokeWidth="1.8"
+            vectorEffect="non-scaling-stroke"
+          />
+        </svg>
+
         {polaroids.map((card, index) => (
           <motion.div
             key={`${card.caption}-${index}`}
@@ -115,8 +185,11 @@ export default function PolaroidGallery() {
             initial={{ rotate: card.rotation }}
             whileHover={{ y: -8, rotate: 0, scale: 1.025 }}
             transition={{ type: "spring", stiffness: 210, damping: 17 }}
-            className="w-[min(78vw,270px)] shrink-0 bg-white p-3 pb-6 shadow-[0_24px_44px_rgba(0,0,0,0.34)] sm:w-[290px] lg:w-[320px]"
+            className="relative w-[min(78vw,270px)] shrink-0 bg-white p-3 pb-6 shadow-[0_24px_44px_rgba(0,0,0,0.34)] sm:w-[290px] lg:w-[320px]"
           >
+            {/* Hanging Pin Detail */}
+            <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 w-3.5 h-3.5 rounded-full bg-accent-deep border-2 border-white shadow-[0_2px_4px_rgba(0,0,0,0.25)] z-25" />
+
             <div className="aspect-[4/5] overflow-hidden bg-[#f4d9de]">
               <img
                 src={card.src}
