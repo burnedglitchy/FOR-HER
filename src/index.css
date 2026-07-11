@@ -2,12 +2,16 @@
 @import "tailwindcss";
 
 @theme {
-  --color-night: #0a0a0f;
-  --color-night-soft: #11111a;
-  --color-paper: #fff8f3;
-  --color-paper-ink: #201518;
-  --color-muted: #b7aeb8;
-  --color-accent: #e63946;
+  --color-night: #0a0609;
+  --color-night-soft: #120d0a;
+  --color-surface: #120d0a;
+  --color-paper: #F5ECD7;
+  --color-document: #FDF6EE;
+  --color-paper-ink: #2f1f17;
+  --color-muted: #C8B89A;
+  --color-accent: #C9956C;
+  --color-accent-light: #E8C4A0;
+  --color-accent-deep: #B07850;
   --font-display: "Playfair Display", Georgia, serif;
   --font-body: "Inter", system-ui, sans-serif;
   --font-hand: "Caveat", cursive;
@@ -18,8 +22,8 @@
 }
 
 html {
-  background: #0a0a0f;
-  color: #fff8f3;
+  background: #0a0609;
+  color: #F5ECD7;
 }
 
 body {
@@ -28,9 +32,9 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   background:
-    radial-gradient(circle at 20% 0%, rgba(230, 57, 70, 0.12), transparent 34rem),
-    radial-gradient(circle at 78% 24%, rgba(255, 255, 255, 0.07), transparent 28rem),
-    #0a0a0f;
+    radial-gradient(circle at 20% 0%, rgba(201, 149, 108, 0.12), transparent 34rem),
+    radial-gradient(circle at 78% 24%, rgba(245, 236, 215, 0.06), transparent 28rem),
+    #0a0609;
   font-family: var(--font-body);
 }
 
@@ -44,20 +48,20 @@ button {
 }
 
 ::selection {
-  background: rgba(230, 57, 70, 0.4);
+  background: rgba(201, 149, 108, 0.4);
 }
 
 .section-shell {
   position: relative;
   min-height: 100vh;
   overflow: hidden;
-  background: #0a0a0f;
+  background: #0a0609;
 }
 
 .glass-panel {
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.07);
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(200, 184, 154, 0.16);
+  background: rgba(18, 13, 10, 0.56);
+  box-shadow: 0 34px 110px rgba(201, 149, 108, 0.09), 0 24px 80px rgba(0, 0, 0, 0.45);
   backdrop-filter: blur(22px);
 }
 
@@ -87,11 +91,11 @@ button {
 @keyframes pulse-glow {
   0%,
   100% {
-    filter: drop-shadow(0 0 8px rgba(230, 57, 70, 0.35));
+    filter: drop-shadow(0 0 8px rgba(201, 149, 108, 0.35));
     transform: scale(1);
   }
   50% {
-    filter: drop-shadow(0 0 22px rgba(230, 57, 70, 0.75));
+    filter: drop-shadow(0 0 22px rgba(232, 196, 160, 0.75));
     transform: scale(1.08);
   }
 }

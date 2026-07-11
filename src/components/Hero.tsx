@@ -60,7 +60,7 @@ export default function Hero() {
         }
 
         context.beginPath();
-        context.fillStyle = `rgba(255, 248, 243, ${star.alpha})`;
+        context.fillStyle = `rgba(245, 236, 215, ${star.alpha * 0.72})`;
         context.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
         context.fill();
       });
@@ -134,21 +134,21 @@ export default function Hero() {
   return (
     <section ref={sectionRef} className="section-shell grid min-h-[115vh] items-end px-6 py-20 sm:px-10 lg:px-20">
       <canvas ref={canvasRef} className="absolute inset-0" aria-hidden="true" />
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(10,10,15,0.15),rgba(10,10,15,0.92))]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_20%,rgba(201,149,108,0.11),transparent_30rem),linear-gradient(180deg,rgba(10,6,9,0.12),rgba(10,6,9,0.94))]" />
       <div
         ref={contentRef}
-        className="relative z-10 max-w-5xl pb-[12vh]"
+        className="relative z-10 max-w-6xl pb-[12vh]"
       >
-        <p className="mb-5 font-body text-xs font-bold uppercase tracking-[0.34em] text-accent">
+        <p className="mb-6 font-body text-xs font-semibold uppercase tracking-[0.42em] text-accent">
           Nakul to Tanu
         </p>
-        <h1 className="min-h-[1.05em] font-display text-[clamp(4.5rem,13vw,13rem)] font-bold leading-[0.86] text-paper">
+        <h1 className="min-h-[1.05em] font-display text-[clamp(4.75rem,13vw,13rem)] font-bold leading-[0.84] text-paper">
           {typedHeadline}
-          <span className="ml-2 inline-block h-[0.82em] w-1 translate-y-2 bg-accent align-baseline" />
+          <span className="ml-3 inline-block h-[0.82em] w-1 translate-y-2 bg-gradient-to-b from-accent-light to-accent-deep align-baseline shadow-[0_0_18px_rgba(201,149,108,0.55)]" />
         </h1>
         <p
           ref={subtitleRef}
-          className="mt-8 max-w-2xl text-xl leading-8 text-paper/72 sm:text-2xl sm:leading-9"
+          className="mt-9 max-w-2xl text-xl leading-8 text-muted sm:text-2xl sm:leading-10"
         >
           I know we met 1.5 weeks ago. Feels like I've known you forever.
         </p>

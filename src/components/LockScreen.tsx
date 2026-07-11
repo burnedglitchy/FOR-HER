@@ -62,9 +62,9 @@ export default function LockScreen({ onUnlock }: LockScreenProps) {
         window.innerHeight * 0.35,
         window.innerWidth * 0.72,
       );
-      gradient.addColorStop(0, "rgba(230, 57, 70, 0.10)");
-      gradient.addColorStop(0.5, "rgba(22, 24, 42, 0.20)");
-      gradient.addColorStop(1, "rgba(10, 10, 15, 0)");
+      gradient.addColorStop(0, "rgba(201, 149, 108, 0.13)");
+      gradient.addColorStop(0.5, "rgba(45, 30, 22, 0.22)");
+      gradient.addColorStop(1, "rgba(10, 6, 9, 0)");
       context.fillStyle = gradient;
       context.fillRect(0, 0, window.innerWidth, window.innerHeight);
 
@@ -76,7 +76,7 @@ export default function LockScreen({ onUnlock }: LockScreenProps) {
         }
 
         context.beginPath();
-        context.fillStyle = `rgba(255, 248, 243, ${star.alpha})`;
+        context.fillStyle = `rgba(245, 236, 215, ${star.alpha})`;
         context.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
         context.fill();
       });
@@ -126,42 +126,42 @@ export default function LockScreen({ onUnlock }: LockScreenProps) {
           transition={{ duration: 0.65, ease: "easeInOut" }}
         >
           <canvas ref={canvasRef} className="absolute inset-0" aria-hidden="true" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(10,10,15,0.58)_70%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(10,6,9,0.62)_70%)]" />
 
           <motion.form
             key={errorKey}
             onSubmit={submitPassword}
             animate={errorKey ? { x: [0, -10, 10, -7, 7, 0] } : { x: 0 }}
             transition={{ duration: 0.38 }}
-            className="glass-panel relative w-full max-w-sm rounded-lg p-6 sm:p-8"
+            className="glass-panel relative w-full max-w-md rounded-lg p-8 sm:p-12"
           >
-            <div className="mb-7 flex items-center gap-3">
-              <span className="grid h-11 w-11 place-items-center rounded-full bg-accent/15 text-accent ring-1 ring-accent/30">
+            <div className="mb-9 flex items-center gap-4">
+              <span className="grid h-12 w-12 place-items-center rounded-full bg-accent/10 text-accent-light ring-1 ring-accent/30 shadow-[0_0_34px_rgba(201,149,108,0.14)]">
                 <LockKeyhole size={20} />
               </span>
               <div>
-                <p className="font-body text-xs font-bold uppercase tracking-[0.28em] text-muted">
+                <p className="font-body text-xs font-semibold uppercase tracking-[0.32em] text-muted">
                   Private Sky
                 </p>
-                <h1 className="font-display text-3xl font-bold text-paper">For Tanu</h1>
+                <h1 className="font-display text-4xl font-bold text-paper">For Tanu</h1>
               </div>
             </div>
 
-            <label htmlFor="password" className="mb-2 block text-sm font-medium text-paper/80">
+            <label htmlFor="password" className="mb-3 block text-xs font-semibold uppercase tracking-[0.18em] text-muted">
               Enter the word that opens this night.
             </label>
             <input
               id="password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
-              className="mb-4 w-full rounded-lg border border-white/12 bg-white/8 px-4 py-3 text-paper outline-none transition focus:border-accent/70 focus:shadow-[0_0_0_4px_rgba(230,57,70,0.16)]"
+              className="mb-5 w-full rounded-md border border-muted/15 bg-surface/70 px-4 py-3.5 text-paper outline-none transition placeholder:text-muted/45 focus:border-accent-light/70 focus:shadow-[0_0_0_4px_rgba(201,149,108,0.18)]"
               placeholder="Password"
               type="password"
               autoComplete="off"
             />
             <button
               type="submit"
-              className="flex w-full items-center justify-center gap-2 rounded-full bg-accent px-5 py-3 font-semibold text-white shadow-[0_0_26px_rgba(230,57,70,0.35)] transition hover:scale-[0.99] hover:shadow-[0_0_34px_rgba(230,57,70,0.48)]"
+              className="flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-accent via-accent-light to-accent-deep px-5 py-3.5 font-semibold text-[#2f1f17] shadow-[0_0_34px_rgba(201,149,108,0.30)] transition hover:scale-[0.99] hover:shadow-[0_0_44px_rgba(232,196,160,0.38)]"
             >
               <Sparkles size={18} />
               Unlock
