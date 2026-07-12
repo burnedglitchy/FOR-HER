@@ -4,16 +4,19 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Heart } from "lucide-react";
 import placeholderPhoto from "../assets/photos/Fo8LNKmaYAE2nWh.jpg";
-import chatpati from "../assets/photos/IMG_20260709_200208_893.jpg";
+import img1 from "../assets/photos/IMG_20260709_200208_893.jpg";
+import img5 from "../assets/photos/IMG_20260709_201426_120.jpg";
+import img2 from "../assets/photos/IMG_20260711_002300_126.jpg";
+import img3 from "../assets/photos/IMG_20260709_201546_709.jpg";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const polaroids = [
-  { src: placeholderPhoto, caption: "OUR DUO", rotation: -4 },
-  { src: placeholderPhoto, caption: "First Date", rotation: 3 },
-  { src: placeholderPhoto, caption: "Laughs", rotation: -2 },
-  { src: placeholderPhoto, caption: "Together", rotation: 4 },
-  { src: placeholderPhoto, caption: "Always us", rotation: -3 },
+  { src: img2, caption: "CUTIE", rotation: -4 },
+  { src: img1, caption: "CHATPATI", rotation: 3 },
+  { src: img5, caption: "AWWW", rotation: -2 },
+  { src: img3, caption: "POOKIE", rotation: 4 },
+  { src: placeholderPhoto, caption: "US?", rotation: -3 },
 ];
 
 const entranceOffsets = [
